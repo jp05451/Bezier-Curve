@@ -20,16 +20,22 @@ class BezierCurve:
         for p in points:
             temp=Point(p[0],p[1])
             # bind drag event
-            temp.point.ondrag(lambda x, y, p=temp.point: self.on_drag(x, y, p))
+            # temp.point.ondrag(lambda x, y, p=temp.point: self.on_drag(x, y, p))
+            temp.point.ondrag(lambda x, y, p=temp: self.on_drag(x, y, p))
             # storge object Point
             self.points.append(temp)
             
 
-    def on_drag(self, x, y, point):
-        print(f"drag: {x},{y}")
-        point.ondrag(None)  # 防止遞歸調用
-        point.goto(x, y)
-        point.ondrag(lambda x, y: self.on_drag(x, y, point))
+    def on_drag(self, x, y, p):
+
+        # p.goto(x, y)
+        # p.ondrag(lambda x, y: self.on_drag(x, y, p))
+        # p.ondrag(None)  # 防止遞歸調用
+        
+        p.point.ondrag(None)  # 防止遞歸調用
+        p.point.goto(x, y)
+        p.position = (x, y)
+        p.point.ondrag(lambda x, y: self.on_drag(x, y, p))
 
 
 # 測試 BezierCurve class
