@@ -16,23 +16,14 @@ class BezierCurve:
         self.screen = Screen()
         self.screen.setup(width=800, height=600)
         self.points=[]
-        # 創建四個點
+        # create points
         for p in points:
             temp=Point(p[0],p[1])
-            # 綁定拖曳事件
+            # bind drag event
             temp.point.ondrag(lambda x, y, p=temp.point: self.on_drag(x, y, p))
             # storge object Point
             self.points.append(temp)
             
-        # self.positions = [(-100, 100), (100, 100), (-100, -100), (100, -100)]
-
-        # 設置點的初始位置
-        # for point in  points:
-        #     point.penup()
-        #     point.goto(pos)
-        #     point.shapesize(0.5, 0.5)
-        #     # 綁定拖曳事件
-        #     point.ondrag(lambda x, y, p=point: self.on_drag(x, y, p))
 
     def on_drag(self, x, y, point):
         print(f"drag: {x},{y}")
@@ -41,7 +32,7 @@ class BezierCurve:
         point.ondrag(lambda x, y: self.on_drag(x, y, point))
 
 
-# 測試 BezierCurve 類
+# 測試 BezierCurve class
 if __name__ == "__main__":
     points = [(-100, 100), (100, 100), (-100, -100), (100, -100)]
     bezier_curve = BezierCurve(points)
