@@ -34,9 +34,22 @@ class BezierCurve:
         
         p.point.ondrag(None)  # 防止遞歸調用
         p.point.goto(x, y)
+        p.position = p.point.position()
         p.position = (x, y)
         p.point.ondrag(lambda x, y: self.on_drag(x, y, p))
 
+    def mid_point(self, p1, p2):
+        return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+    
+    def calculate(self,points,level):
+        self.max_level=5
+        if level > self.max_level:
+            self.draw((self.points[0].position,self.points[-1].position))
+        else:
+            pass
+    
+    def draw(self,point:tuple):
+        pass    
 
 # 測試 BezierCurve class
 if __name__ == "__main__":
