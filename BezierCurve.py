@@ -1,101 +1,60 @@
+import numpy as np
 from turtle import Screen, Turtle
-
-
-class Point:
-    def __init__(self, x, y):
-        self.point = Turtle(shape="square")
-        self.point.penup()
-        self.point.goto(x, y)
-        self.point.shapesize(0.5, 0.5)
-        self.position = (x, y)
-
-
+import math
 class BezierCurve:
     def __init__(self, points):
-        self.screen = Screen()
-        self.pen = Turtle()
-        self.pen.speed(0)
         self.order = len(points) - 1
+        self.screen = Screen()
         self.screen.setup(width=800, height=600)
-        self.points = []
-        # create points
-        for p in points:
-            temp = Point(p[0], p[1])
-            # bind drag event
-            # temp.point.ondrag(lambda x, y, p=temp.point: self.on_drag(x, y, p))
-            temp.point.ondrag(lambda x, y, p=temp: self.on_drag(x, y, p))
-            # storge object Point
-            self.points.append(temp)
+        self.points = [Turtle(shape="circle") for _ in range(4)]
+        self.positions = points
+        self.curve_turtle = Turtle()
+        self.curve_turtle.hideturtle()
+        
+        # 設置點的初始位置
+        for point, pos in zip(self.points, self.positions):
+            point.penup()
+            point.goto(pos)
+            point.shapesize(0.5, 0.5)
+            point.ondrag(self.create_drag_handler(point))
+        
+        self.draw_curve()
 
-    def on_drag(self, x, y, p):
-        # p.goto(x, y)
-        # p.ondrag(lambda x, y: self.on_drag(x, y, p))
-        # p.ondrag(None)  # 防止遞歸調用
+    def create_drag_handler(self, point):
+        def on_drag(x, y):
+            point.goto(x, y)
+            self.update_positions()
+            self.draw_curve()
+        return on_drag
 
-        p.point.ondrag(None)  # 防止遞歸調用
-        p.point.goto(x, y)
-        p.position = p.point.position()
-        p.position = (x, y)
-        # p.draw(self.points[0].position,self.points[-1].position)
-        p.point.ondrag(lambda x, y: self.on_drag(x, y, p))
+    def update_positions(self):
+        self.positions = [point.pos() for point in self.points]
 
-    def mid_point(self, p1, p2):
-        return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+    def draw_curve(self):
+        self.curve_turtle.clear()
+        t_values = np.linspace(0, 1, 10)
+        curve_points = [self.calculate_bezier_point(t) for t in t_values]
+        
+        self.curve_turtle.penup()
+        self.curve_turtle.goto(curve_points[0])
+        self.curve_turtle.pendown()
+        
+        for point in curve_points:
+            self.curve_turtle.goto(point)
 
-    # def calculate(self,points,level):
-    #     self.max_level=3
-    #     if level > self.max_level:
-    #         self.draw((points[0],points[-1]))
-    #     else:
-    #         L1 = points[0]
-    #         L2 = self.mid_point(points[0], points[1])
-    #         H = self.mid_point(points[1], points[2])
-    #         R3 = self.mid_point(points[2], points[3])
-    #         R4 = points[3]
-    #         L3 = self.mid_point(L2, H)
-    #         R2 = self.mid_point(R3, H)
-    #         L4 = self.mid_point(L3, R2)
-    #         R1 = L4
-    #         self.calculate((L1, L2, L3, L4), level + 1)
-    #         self.calculate((R1, R2, R3, R4), level + 1)
+    def calculate_bezier_point(self, t):
+        n = self.order
+        x = sum(self.binomial_coeff(n, i) * (1 - t)**(n - i) * t**i * self.positions[i][0] for i in range(n + 1))
+        y = sum(self.binomial_coeff(n, i) * (1 - t)**(n - i) * t**i * self.positions[i][1] for i in range(n + 1))
+        return x, y
 
-    # def draw(self,point):
-    #     self.pen.penup()
-    #     self.pen.goto(point[0])
-    #     self.pen.pendown()
-    #     self.pen.goto(point[1])
-    #     self.pen.penup()
+    @staticmethod
+    def binomial_coeff(n, k):
+        return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
 
-    def calculate(self, points, t):
-        # x,y=(1-t)**3*points[0] + 3*t*(1-t)**2*points[1] + 3*t**2*(1-t)*points[2] + t**3*points[3]
-        # self.pen.penup()
-        # self.pen.goto(x,y)
-        # self.pen.pendown()
-        self.pen.penup()
-        self.pen.goto(points[0])
-        self.pen.pendown()
-        for i in range(11):
-            t = i / 10
-            x = (
-                (1 - t) ** 3 * points[0][0]
-                + 3 * t * (1 - t) ** 2 * points[1][0]
-                + 3 * t**2 * (1 - t) * points[2][0]
-                + t**3 * points[3][0]
-            )
-            y = (
-                (1 - t) ** 3 * points[0][1]
-                + 3 * t * (1 - t) ** 2 * points[1][1]
-                + 3 * t**2 * (1 - t) * points[2][1]
-                + t**3 * points[3][1]
-            )
-            self.pen.goto(x, y)
-        self.pen.penup()
 
-# 測試 BezierCurve class
+# 測試 BezierCurve 類
 if __name__ == "__main__":
-    points = [(-100, 100), (10, 100), (-10, -100), (100, -100)]
-    bezier_curve = BezierCurve((points))
-    # bezier_curve.draw((points[0],points[-1]))
-    bezier_curve.calculate((points[0], points[1], points[2], points[3]), 1)
+    points = [(-100, 100), (100, 100), (-100, -100), (100, -100)]
+    bezier_curve = BezierCurve(points)
     bezier_curve.screen.mainloop()
-    # bezier_curve.screen.exitonclick()

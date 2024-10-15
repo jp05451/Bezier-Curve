@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 pythonturtle = "*"
+numpy = "*"
+pyopengl = "*"
+cython = "*"
 
 [dev-packages]
 
