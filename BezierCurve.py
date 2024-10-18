@@ -1,14 +1,16 @@
-import numpy as np
 from turtle import Screen, Turtle
+import numpy as np
 import math
+
 class BezierCurve:
     def __init__(self, points):
         self.order = len(points) - 1
         self.screen = Screen()
         self.screen.setup(width=800, height=600)
+        self.screen.tracer(0)  # 關閉動畫
         self.points = [Turtle(shape="circle") for _ in range(4)]
         self.positions = points
-        self.curve_turtle = Turtle()
+        self.curve_turtle = Turtle(visible=False)
         self.curve_turtle.hideturtle()
         
         # 設置點的初始位置
@@ -19,12 +21,14 @@ class BezierCurve:
             point.ondrag(self.create_drag_handler(point))
         
         self.draw_curve()
+        self.screen.update()  # 手動更新畫布
 
     def create_drag_handler(self, point):
         def on_drag(x, y):
             point.goto(x, y)
             self.update_positions()
             self.draw_curve()
+            self.screen.update()  # 手動更新畫布
         return on_drag
 
     def update_positions(self):
@@ -32,7 +36,7 @@ class BezierCurve:
 
     def draw_curve(self):
         self.curve_turtle.clear()
-        t_values = np.linspace(0, 1, 10)
+        t_values = np.linspace(0, 1, 100)
         curve_points = [self.calculate_bezier_point(t) for t in t_values]
         
         self.curve_turtle.penup()
@@ -51,7 +55,6 @@ class BezierCurve:
     @staticmethod
     def binomial_coeff(n, k):
         return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
-
 
 # 測試 BezierCurve 類
 if __name__ == "__main__":
