@@ -37,17 +37,32 @@ class BezierCurve:
 
         glutSwapBuffers()
 
+    # def calculate_bezier_point(self, t):
+    #     n = self.order
+    #     x = sum(
+    #         self.binomial_coeff(n, i) * (1 - t) ** (n - i) * t**i * self.positions[i][0]
+    #         for i in range(n + 1)
+    #     )
+    #     y = sum(
+    #         self.binomial_coeff(n, i) * (1 - t) ** (n - i) * t**i * self.positions[i][1]
+    #         for i in range(n + 1)
+    #     )
+    #     return x, y
+    
     def calculate_bezier_point(self, t):
-        n = self.order
-        x = sum(
-            self.binomial_coeff(n, i) * (1 - t) ** (n - i) * t**i * self.positions[i][0]
-            for i in range(n + 1)
-        )
-        y = sum(
-            self.binomial_coeff(n, i) * (1 - t) ** (n - i) * t**i * self.positions[i][1]
-            for i in range(n + 1)
-        )
-        return x, y
+        def recursive_bezier(points, t):
+            if len(points) == 1:
+                return points[0]
+            new_points = [
+                (
+                    (1 - t) * points[i][0] + t * points[i + 1][0],
+                    (1 - t) * points[i][1] + t * points[i + 1][1],
+                )
+                for i in range(len(points) - 1)
+            ]
+            return recursive_bezier(new_points, t)
+
+        return recursive_bezier(self.positions, t)
 
     @staticmethod
     def binomial_coeff(n, k):
