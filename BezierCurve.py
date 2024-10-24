@@ -25,14 +25,20 @@ class BezierCurve:
 
     def calculate_bezier_curve(self):
         t_values = np.linspace(0, 1, 100)
-        curve_points = [self.calculate_bezier_point(t) for t in t_values]
+        curve_points = [self.calculate_bezier_point_recursive(self.points, t) for t in t_values]
         return curve_points
 
-    def calculate_bezier_point(self, t):
-        n = self.order
-        x = sum(self.binomial_coeff(n, i) * (1 - t)**(n - i) * t**i * self.points[i][0] for i in range(n + 1))
-        y = sum(self.binomial_coeff(n, i) * (1 - t)**(n - i) * t**i * self.points[i][1] for i in range(n + 1))
-        return x, y
+    def calculate_bezier_point_recursive(self, points, t):
+        if len(points) == 1:
+            return points[0]
+        new_points = [
+            (
+                (1 - t) * points[i][0] + t * points[i + 1][0],
+                (1 - t) * points[i][1] + t * points[i + 1][1]
+            )
+            for i in range(len(points) - 1)
+        ]
+        return self.calculate_bezier_point_recursive(new_points, t)
 
     @staticmethod
     def binomial_coeff(n, k):
