@@ -8,6 +8,7 @@ numpy = "*"
 pyopengl = "*"
 cython = "*"
 pygame = "*"
+pythonturtle = "*"
 
 [dev-packages]
 
