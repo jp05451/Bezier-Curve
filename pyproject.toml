@@ -9,10 +9,8 @@ description = "Bezier Curve Project"
 requires-python = ">=3.10"
 dependencies = [
     "numpy",
-    "pyopengl",
     "cython",
     "pygame",
-    "pythonturtle",
 ]
 
 [tool.setuptools]
