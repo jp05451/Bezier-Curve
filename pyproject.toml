@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bezier-curve"
+version = "0.1.0"
+description = "Bezier Curve Project"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pyopengl",
+    "cython",
+    "pygame",
+    "pythonturtle",
+]
+
+[tool.setuptools]
+packages = []
