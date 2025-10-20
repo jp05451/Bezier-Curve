@@ -1,0 +1,4 @@
+bezier_curve.egg-info/
+__pycache__/
+.venv/
+uv.lock
