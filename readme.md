@@ -1,36 +1,32 @@
 
 ## 安裝與環境設置
 
-1. 確保已安裝 [Python 3.10](https://www.python.org/downloads/release/python-3100/) 或更高版本。
-2. 安裝 [Pipenv](https://pipenv.pypa.io/en/latest/):
+1. 確保已安裝 Python 3.12 或更高版本：
+    https://www.python.org/downloads/
+2. 安裝 uv（套件與環境管理工具）：
+    - macOS/Linux:
+      ```sh
+      curl -LsSf https://astral.sh/uv/install.sh | sh
+      ```
+    - Windows (PowerShell):
+      ```powershell
+      iwr -useb https://astral.sh/uv/install.ps1 | iex
+      ```
 
+## 安裝依賴
+
+1. 建立虛擬環境：
     ```sh
-    pip install pipenv
+    uv venv
     ```
 
-3. 使用 Pipenv 安裝依賴：
 
-    ```sh
-    pipenv install
-    ```
 
 ## 執行程式
+```sh
+uv run python BezierCurveApp.py
+```
 
-1. 啟動虛擬環境：
-
-    ```sh
-    pipenv shell
-    ```
-
-2. 執行程式：
-
-    ```sh
-    python BezierCurve.py
-    ```
-
-## 主要功能
-
-- 繪製貝茲曲線
 - 拖動錨點以控制曲線形狀
 
 ## 參考
@@ -61,7 +57,3 @@
 - `draw_curve(self)`: 繪製貝茲曲線的方法，可能會使用一些圖形庫來實現。
 
 
-
-## 貢獻
-
-歡迎提交問題和請求，或進行代碼貢獻。
